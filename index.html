@@ -13,116 +13,58 @@
     .container{max-width:1200px;margin:25px auto;padding:0 18px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:25px}
     .card{background:white;border-radius:16px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.08);border-left:6px solid #0f766e}
-    .card h3{margin-bottom:10px;color:#064e3b}
-    .card p{font-size:14px;line-height:1.5;color:#4b5563}
+    .card h3{margin-bottom:10px;color:#064e3b}.card p{font-size:14px;line-height:1.5;color:#4b5563}
     .main{background:white;border-radius:18px;padding:24px;box-shadow:0 8px 20px rgba(0,0,0,.08)}
-    .section-title{font-size:24px;color:#064e3b;margin-bottom:8px}
-    .subtitle{color:#64748b;margin-bottom:20px}
+    .section-title{font-size:24px;color:#064e3b;margin-bottom:8px}.subtitle{color:#64748b;margin-bottom:20px}
     .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}
     label{font-weight:bold;font-size:14px;margin-bottom:6px;display:block}
-    select,input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px}
-    .upload{border:2px dashed #0f766e;border-radius:16px;padding:25px;text-align:center;background:#f0fdfa;margin:18px 0}
-    .upload input{border:none;background:white;margin-top:12px}
-    .buttons{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
-    button{border:none;border-radius:10px;padding:12px 18px;font-weight:bold;cursor:pointer;font-size:15px}
-    .primary{background:#0f766e;color:white}
-    .secondary{background:#e2e8f0;color:#1e293b}
-    .success{background:#16a34a;color:white}
-    table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}
-    th{background:#064e3b;color:white;padding:10px;text-align:left}
-    td{border:1px solid #cbd5e1;padding:9px;background:#fff}
+    select,input,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px}
+    textarea{min-height:260px;font-family:Consolas,monospace;line-height:1.45}
+    .upload{border:2px dashed #0f766e;border-radius:16px;padding:25px;text-align:center;background:#f0fdfa;margin:18px 0}.upload input{border:none;background:white;margin-top:12px}
+    .buttons{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}button{border:none;border-radius:10px;padding:12px 18px;font-weight:bold;cursor:pointer;font-size:15px}
+    .primary{background:#0f766e;color:white}.secondary{background:#e2e8f0;color:#1e293b}.success{background:#16a34a;color:white}.danger{background:#dc2626;color:white}
+    table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}th{background:#064e3b;color:white;padding:10px;text-align:left}td{border:1px solid #cbd5e1;padding:9px;background:#fff}
+    td input{border:0;padding:6px;border-radius:0;background:#fff}
+    .copybox{background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;padding:16px;margin-top:20px}
     .note{background:#fff7ed;border-left:5px solid #f97316;padding:14px;border-radius:10px;margin-top:18px;color:#7c2d12}
-    footer{text-align:center;color:#64748b;padding:25px;font-size:13px}
+    footer{text-align:center;color:#64748b;padding:25px;font-size:13px}.status{font-weight:bold;color:#0f766e;margin-top:8px}
   </style>
 </head>
 <body>
-  <header>
-    <h1>🏛️ Muni Rentas - Recaudación 2026</h1>
-    <p>Digitalización de liquidaciones municipales y registro rápido de importes diarios</p>
-  </header>
-
+  <header><h1>🏛️ Muni Rentas - Recaudación 2026</h1><p>Digitalización de liquidaciones municipales y copiado rápido de importes diarios</p></header>
   <div class="container">
     <div class="grid">
-      <div class="card">
-        <h3>📋 Liquidaciones Cobranza de Ambulantes</h3>
-        <p>Registro de liquidaciones de ambulantes, importes diarios y control por fecha.</p>
-      </div>
-      <div class="card">
-        <h3>🟨 Liquidaciones SISA - Tarjetas Amarillas</h3>
-        <p>Módulo principal para subir fotos, extraer datos y llenar el Excel mensual.</p>
-      </div>
-      <div class="card">
-        <h3>💰 Liquidación Deuda SISA</h3>
-        <p>Control y resumen de deudas SISA por comerciante, periodo o concepto.</p>
-      </div>
-      <div class="card">
-        <h3>🧾 Órdenes de Pago</h3>
-        <p>Generación y control de órdenes de pago municipales.</p>
-      </div>
+      <div class="card"><h3>📋 Liquidaciones Cobranza de Ambulantes</h3><p>Registro de importes diarios de ambulantes.</p></div>
+      <div class="card"><h3>🟨 Liquidaciones SISA - Tarjetas Amarillas</h3><p>Módulo para obtener importes diarios y pegarlos directo en Excel.</p></div>
+      <div class="card"><h3>💰 Liquidación Deuda SISA</h3><p>Control de deuda SISA por comerciante.</p></div>
+      <div class="card"><h3>🧾 Órdenes de Pago</h3><p>Control de órdenes de pago municipales.</p></div>
     </div>
-
     <div class="main">
       <h2 class="section-title">🟨 Liquidaciones SISA - Tarjetas Amarillas</h2>
-      <p class="subtitle">Selecciona el mes y día, sube las fotos de la hoja física y revisa los importes antes de generar el Excel.</p>
-
+      <p class="subtitle">Objetivo: obtener solo la columna de importes diarios para copiarla y pegarla en Excel.</p>
       <div class="form-grid">
-        <div>
-          <label>Mes de trabajo</label>
-          <select>
-            <option>JUNIO 2026</option>
-            <option>JULIO 2026</option>
-            <option>AGOSTO 2026</option>
-          </select>
-        </div>
-        <div>
-          <label>Día de liquidación</label>
-          <input type="date" value="2026-06-04" />
-        </div>
-        <div>
-          <label>Columna del Excel</label>
-          <input type="text" value="4/06/2026" />
-        </div>
+        <div><label>Mes de trabajo</label><select><option>JUNIO 2026</option><option>JULIO 2026</option><option>AGOSTO 2026</option></select></div>
+        <div><label>Día de liquidación</label><input type="date" value="2026-06-04" /></div>
+        <div><label>Columna del Excel</label><input type="text" value="4/06/2026" /></div>
       </div>
-
-      <div class="upload">
-        <h3>📸 Subir fotos de liquidación</h3>
-        <p>Sube las fotos de las hojas del día. La IA leerá orden, apellidos, nombres e importe.</p>
-        <input type="file" multiple accept="image/*,.pdf" />
-      </div>
-
-      <div class="buttons">
-        <button class="primary">Digitalizar fotos</button>
-        <button class="secondary">Revisar datos</button>
-        <button class="success">Generar Excel actualizado</button>
-      </div>
-
-      <h3>Vista previa de datos extraídos</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Orden</th>
-            <th>Paterno</th>
-            <th>Materno</th>
-            <th>Nombres</th>
-            <th>Importe</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>Infante</td><td>Balladares</td><td>Santos Eustacio</td><td>5.00</td></tr>
-          <tr><td>2</td><td>Zurita</td><td>Jiménez</td><td>Rubbi</td><td>5.00</td></tr>
-          <tr><td>3</td><td>Moreno</td><td>Luján</td><td>Santos Isabel</td><td>5.00</td></tr>
-          <tr><td>4</td><td>Vásquez</td><td>Fernández</td><td>Celfa</td><td>3.00</td></tr>
-        </tbody>
-      </table>
-
-      <div class="note">
-        <strong>Nota:</strong> Esta es la primera versión visual. Luego conectaremos la lectura real de fotos y la generación automática del Excel.
-      </div>
+      <div class="upload"><h3>📸 Subir fotos de liquidación</h3><p>Por ahora la página prepara la columna. La lectura automática real de fotos se conectará después.</p><input id="fotos" type="file" multiple accept="image/*,.pdf" /><div id="estadoFotos" class="status"></div></div>
+      <div class="buttons"><button class="primary" onclick="digitalizarDemo()">Digitalizar / cargar importes de prueba</button><button class="secondary" onclick="actualizarColumna()">Actualizar columna desde tabla</button><button class="success" onclick="copiarImportes()">Copiar importes para Excel</button><button class="danger" onclick="limpiarImportes()">Limpiar</button></div>
+      <h3>Importes diarios</h3>
+      <table><thead><tr><th style="width:80px">Orden</th><th>Importe</th></tr></thead><tbody id="tablaImportes"></tbody></table>
+      <div class="copybox"><h3>Columna lista para pegar en Excel</h3><p>Copia esta columna y pégala directamente en la columna del día en Excel.</p><textarea id="columnaImportes" placeholder="Aquí aparecerán los importes, uno debajo de otro..."></textarea><div class="buttons"><button class="success" onclick="copiarImportes()">Copiar columna</button></div></div>
+      <div class="note"><strong>Importante:</strong> Para pegar en Excel, selecciona la primera celda del día correspondiente y presiona Ctrl + V. Cada importe caerá en una fila.</div>
     </div>
   </div>
-
-  <footer>
-    Muni Rentas - Recaudación 2026 | Sistema de apoyo para Rentas y Recaudación Municipal
-  </footer>
+  <footer>Muni Rentas - Recaudación 2026 | Sistema de apoyo para Rentas y Recaudación Municipal</footer>
+<script>
+const importesDemo = [5,5,5,3,5,5,"",5,"",10,3,5,10,5,5,5,"","",5,5,5,"","",5,"",5,10,5,"","","",3,3,3,5,"",5,6,"",3,3,4,5,5,5,6,3.30,"","","","",4,3,"","","",3,3,8,3.30,3,3,3,5,3,3,3,"","",3,"","",3,"","",3,"",3,3,3,3,"",4,3,3,3,3,3,4,3,"","",2,3,5,"",2,2,"",5,5,"",5,2,2,"","",2];
+function renderTabla(arr){const tbody=document.getElementById('tablaImportes');tbody.innerHTML='';arr.forEach((v,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td><input value="${v}" oninput="actualizarColumna()"></td>`;tbody.appendChild(tr);});actualizarColumna();}
+function digitalizarDemo(){renderTabla(importesDemo);document.getElementById('estadoFotos').textContent='Se cargó una columna de prueba editable. Luego se conectará lectura real de fotos.';}
+function actualizarColumna(){const inputs=[...document.querySelectorAll('#tablaImportes input')];document.getElementById('columnaImportes').value=inputs.map(i=>i.value.trim()).join('\n');}
+async function copiarImportes(){actualizarColumna();const txt=document.getElementById('columnaImportes').value;try{await navigator.clipboard.writeText(txt);alert('Importes copiados. Ahora ve a Excel, selecciona la primera celda del día y presiona Ctrl + V.');}catch(e){document.getElementById('columnaImportes').select();document.execCommand('copy');alert('Importes copiados. Pégalos en Excel.');}}
+function limpiarImportes(){document.getElementById('tablaImportes').innerHTML='';document.getElementById('columnaImportes').value='';document.getElementById('estadoFotos').textContent='';}
+document.getElementById('fotos').addEventListener('change',e=>{document.getElementById('estadoFotos').textContent=`Fotos cargadas: ${e.target.files.length}`;});
+renderTabla([]);
+</script>
 </body>
 </html>
