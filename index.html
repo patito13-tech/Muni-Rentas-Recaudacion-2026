@@ -5,66 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Muni Rentas - Recaudación 2026</title>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-    body{background:#eef3f8;color:#1f2937}
-    header{background:linear-gradient(135deg,#0f766e,#064e3b);color:white;padding:28px 20px;text-align:center}
-    header h1{font-size:32px;margin-bottom:8px}
-    header p{font-size:16px;opacity:.95}
-    .container{max-width:1200px;margin:25px auto;padding:0 18px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:25px}
-    .card{background:white;border-radius:16px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.08);border-left:6px solid #0f766e}
-    .card h3{margin-bottom:10px;color:#064e3b}.card p{font-size:14px;line-height:1.5;color:#4b5563}
-    .main{background:white;border-radius:18px;padding:24px;box-shadow:0 8px 20px rgba(0,0,0,.08)}
-    .section-title{font-size:24px;color:#064e3b;margin-bottom:8px}.subtitle{color:#64748b;margin-bottom:20px}
-    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}
-    label{font-weight:bold;font-size:14px;margin-bottom:6px;display:block}
-    select,input,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px}
-    textarea{min-height:260px;font-family:Consolas,monospace;line-height:1.45}
-    .upload{border:2px dashed #0f766e;border-radius:16px;padding:25px;text-align:center;background:#f0fdfa;margin:18px 0}.upload input{border:none;background:white;margin-top:12px}
-    .buttons{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}button{border:none;border-radius:10px;padding:12px 18px;font-weight:bold;cursor:pointer;font-size:15px}
-    .primary{background:#0f766e;color:white}.secondary{background:#e2e8f0;color:#1e293b}.success{background:#16a34a;color:white}.danger{background:#dc2626;color:white}
-    table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}th{background:#064e3b;color:white;padding:10px;text-align:left}td{border:1px solid #cbd5e1;padding:9px;background:#fff}
-    td input{border:0;padding:6px;border-radius:0;background:#fff}
-    .copybox{background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;padding:16px;margin-top:20px}
-    .note{background:#fff7ed;border-left:5px solid #f97316;padding:14px;border-radius:10px;margin-top:18px;color:#7c2d12}
-    footer{text-align:center;color:#64748b;padding:25px;font-size:13px}.status{font-weight:bold;color:#0f766e;margin-top:8px}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}body{background:#eef3f8;color:#1f2937}header{background:linear-gradient(135deg,#0f766e,#064e3b);color:white;padding:28px 20px;text-align:center}header h1{font-size:32px;margin-bottom:8px}.container{max-width:1200px;margin:25px auto;padding:0 18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:25px}.card{background:white;border-radius:16px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.08);border-left:6px solid #0f766e}.card h3{margin-bottom:10px;color:#064e3b}.card p{font-size:14px;line-height:1.5;color:#4b5563}.main{background:white;border-radius:18px;padding:24px;box-shadow:0 8px 20px rgba(0,0,0,.08)}.section-title{font-size:24px;color:#064e3b;margin-bottom:8px}.subtitle{color:#64748b;margin-bottom:20px}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}label{font-weight:bold;font-size:14px;margin-bottom:6px;display:block}select,input,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px}textarea{min-height:260px;font-family:Consolas,monospace;line-height:1.45}.upload{border:2px dashed #0f766e;border-radius:16px;padding:25px;text-align:center;background:#f0fdfa;margin:18px 0}.upload input{border:none;background:white;margin-top:12px}.buttons{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}button{border:none;border-radius:10px;padding:12px 18px;font-weight:bold;cursor:pointer;font-size:15px}.primary{background:#0f766e;color:white}.secondary{background:#e2e8f0;color:#1e293b}.success{background:#16a34a;color:white}.danger{background:#dc2626;color:white}.blue{background:#2563eb;color:white}.purple{background:#7c3aed;color:white}table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}th{background:#064e3b;color:white;padding:10px;text-align:left}td{border:1px solid #cbd5e1;padding:9px;background:#fff}td input{border:0;padding:6px;border-radius:0;background:#fff}.copybox,.savebox{background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;padding:16px;margin-top:20px}.note{background:#fff7ed;border-left:5px solid #f97316;padding:14px;border-radius:10px;margin-top:18px;color:#7c2d12}footer{text-align:center;color:#64748b;padding:25px;font-size:13px}.status{font-weight:bold;color:#0f766e;margin-top:8px}.small{font-size:13px;color:#64748b;margin-top:6px}
   </style>
 </head>
 <body>
   <header><h1>🏛️ Muni Rentas - Recaudación 2026</h1><p>Digitalización de liquidaciones municipales y copiado rápido de importes diarios</p></header>
   <div class="container">
-    <div class="grid">
-      <div class="card"><h3>📋 Liquidaciones Cobranza de Ambulantes</h3><p>Registro de importes diarios de ambulantes.</p></div>
-      <div class="card"><h3>🟨 Liquidaciones SISA - Tarjetas Amarillas</h3><p>Módulo para obtener importes diarios y pegarlos directo en Excel.</p></div>
-      <div class="card"><h3>💰 Liquidación Deuda SISA</h3><p>Control de deuda SISA por comerciante.</p></div>
-      <div class="card"><h3>🧾 Órdenes de Pago</h3><p>Control de órdenes de pago municipales.</p></div>
-    </div>
+    <div class="grid"><div class="card"><h3>📋 Liquidaciones Cobranza de Ambulantes</h3><p>Registro de importes diarios de ambulantes.</p></div><div class="card"><h3>🟨 Liquidaciones SISA - Tarjetas Amarillas</h3><p>Módulo para obtener importes diarios y pegarlos directo en Excel.</p></div><div class="card"><h3>💰 Liquidación Deuda SISA</h3><p>Control de deuda SISA por comerciante.</p></div><div class="card"><h3>🧾 Órdenes de Pago</h3><p>Control de órdenes de pago municipales.</p></div></div>
     <div class="main">
-      <h2 class="section-title">🟨 Liquidaciones SISA - Tarjetas Amarillas</h2>
-      <p class="subtitle">Objetivo: obtener solo la columna de importes diarios para copiarla y pegarla en Excel.</p>
-      <div class="form-grid">
-        <div><label>Mes de trabajo</label><select><option>JUNIO 2026</option><option>JULIO 2026</option><option>AGOSTO 2026</option></select></div>
-        <div><label>Día de liquidación</label><input type="date" value="2026-06-04" /></div>
-        <div><label>Columna del Excel</label><input type="text" value="4/06/2026" /></div>
-      </div>
+      <h2 class="section-title">🟨 Liquidaciones SISA - Tarjetas Amarillas</h2><p class="subtitle">Objetivo: obtener solo la columna de importes diarios para copiarla y pegarla en Excel.</p>
+      <div class="form-grid"><div><label>Mes de trabajo</label><select id="mes"><option>JUNIO 2026</option><option>JULIO 2026</option><option>AGOSTO 2026</option></select></div><div><label>Día de liquidación</label><input id="dia" type="date" value="2026-06-04" /></div><div><label>Columna del Excel</label><input id="columna" type="text" value="4/06/2026" /></div></div>
       <div class="upload"><h3>📸 Subir fotos de liquidación</h3><p>Por ahora la página prepara la columna. La lectura automática real de fotos se conectará después.</p><input id="fotos" type="file" multiple accept="image/*,.pdf" /><div id="estadoFotos" class="status"></div></div>
       <div class="buttons"><button class="primary" onclick="digitalizarDemo()">Digitalizar / cargar importes de prueba</button><button class="secondary" onclick="actualizarColumna()">Actualizar columna desde tabla</button><button class="success" onclick="copiarImportes()">Copiar importes para Excel</button><button class="danger" onclick="limpiarImportes()">Limpiar</button></div>
-      <h3>Importes diarios</h3>
-      <table><thead><tr><th style="width:80px">Orden</th><th>Importe</th></tr></thead><tbody id="tablaImportes"></tbody></table>
+      <h3>Importes diarios</h3><table><thead><tr><th style="width:80px">Orden</th><th>Importe</th></tr></thead><tbody id="tablaImportes"></tbody></table>
       <div class="copybox"><h3>Columna lista para pegar en Excel</h3><p>Copia esta columna y pégala directamente en la columna del día en Excel.</p><textarea id="columnaImportes" placeholder="Aquí aparecerán los importes, uno debajo de otro..."></textarea><div class="buttons"><button class="success" onclick="copiarImportes()">Copiar columna</button></div></div>
-      <div class="note"><strong>Importante:</strong> Para pegar en Excel, selecciona la primera celda del día correspondiente y presiona Ctrl + V. Cada importe caerá en una fila.</div>
+      <div class="savebox"><h3>💾 Guardar para abrir en otra PC</h3><p>Guarda los importes desde tu celular y genera un código. Luego abre esta misma página en la PC, pega el código y recuperas la columna.</p><div class="buttons"><button class="blue" onclick="guardarEnEsteDispositivo()">Guardar en este dispositivo</button><button class="purple" onclick="generarCodigo()">Generar código para PC</button><button class="secondary" onclick="cargarGuardado()">Cargar guardado</button></div><label>Código para pasar a la PC</label><textarea id="codigoTransferencia" style="min-height:90px" placeholder="Aquí aparecerá el código. Cópialo o envíatelo por WhatsApp/Correo para abrirlo en la PC."></textarea><div class="buttons"><button class="success" onclick="copiarCodigo()">Copiar código</button><button class="primary" onclick="cargarDesdeCodigo()">Cargar desde código</button></div><div class="small">Nota: GitHub Pages no guarda en la nube por sí solo. Este código sirve para mover los importes del celular a la PC sin descargar Excel.</div></div>
+      <div class="note"><strong>Importante:</strong> En la PC, selecciona la primera celda del día en Excel y presiona Ctrl + V. Cada importe caerá en una fila.</div>
     </div>
-  </div>
-  <footer>Muni Rentas - Recaudación 2026 | Sistema de apoyo para Rentas y Recaudación Municipal</footer>
+  </div><footer>Muni Rentas - Recaudación 2026 | Sistema de apoyo para Rentas y Recaudación Municipal</footer>
 <script>
-const importesDemo = [5,5,5,3,5,5,"",5,"",10,3,5,10,5,5,5,"","",5,5,5,"","",5,"",5,10,5,"","","",3,3,3,5,"",5,6,"",3,3,4,5,5,5,6,3.30,"","","","",4,3,"","","",3,3,8,3.30,3,3,3,5,3,3,3,"","",3,"","",3,"","",3,"",3,3,3,3,"",4,3,3,3,3,3,4,3,"","",2,3,5,"",2,2,"",5,5,"",5,2,2,"","",2];
-function renderTabla(arr){const tbody=document.getElementById('tablaImportes');tbody.innerHTML='';arr.forEach((v,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td><input value="${v}" oninput="actualizarColumna()"></td>`;tbody.appendChild(tr);});actualizarColumna();}
-function digitalizarDemo(){renderTabla(importesDemo);document.getElementById('estadoFotos').textContent='Se cargó una columna de prueba editable. Luego se conectará lectura real de fotos.';}
-function actualizarColumna(){const inputs=[...document.querySelectorAll('#tablaImportes input')];document.getElementById('columnaImportes').value=inputs.map(i=>i.value.trim()).join('\n');}
-async function copiarImportes(){actualizarColumna();const txt=document.getElementById('columnaImportes').value;try{await navigator.clipboard.writeText(txt);alert('Importes copiados. Ahora ve a Excel, selecciona la primera celda del día y presiona Ctrl + V.');}catch(e){document.getElementById('columnaImportes').select();document.execCommand('copy');alert('Importes copiados. Pégalos en Excel.');}}
-function limpiarImportes(){document.getElementById('tablaImportes').innerHTML='';document.getElementById('columnaImportes').value='';document.getElementById('estadoFotos').textContent='';}
-document.getElementById('fotos').addEventListener('change',e=>{document.getElementById('estadoFotos').textContent=`Fotos cargadas: ${e.target.files.length}`;});
-renderTabla([]);
+const importesDemo=[5,5,5,3,5,5,"",5,"",10,3,5,10,5,5,5,"","",5,5,5,"","",5,"",5,10,5,"","","",3,3,3,5,"",5,6,"",3,3,4,5,5,5,6,3.30,"","","","",4,3,"","",3,3,8,3.30,3,3,3,5,3,3,3,"","",3,"","",3,"","",3,"",3,3,3,3,"",4,3,3,3,3,3,4,3,"","",2,3,5,"",2,2,"",5,5,"",5,2,2,"","",2];
+function renderTabla(arr){const tbody=document.getElementById('tablaImportes');tbody.innerHTML='';arr.forEach((v,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td><input value="${v}" oninput="actualizarColumna()"></td>`;tbody.appendChild(tr)});actualizarColumna()}
+function digitalizarDemo(){renderTabla(importesDemo);document.getElementById('estadoFotos').textContent='Se cargó una columna de prueba editable. Luego se conectará lectura real de fotos.'}
+function actualizarColumna(){const inputs=[...document.querySelectorAll('#tablaImportes input')];document.getElementById('columnaImportes').value=inputs.length?inputs.map(i=>i.value.trim()).join('\n'):document.getElementById('columnaImportes').value}
+async function copiarTexto(txt,msg){try{await navigator.clipboard.writeText(txt);alert(msg)}catch(e){alert('No se pudo copiar automático. Selecciona el texto y copia manualmente.')}}
+function copiarImportes(){actualizarColumna();copiarTexto(document.getElementById('columnaImportes').value,'Importes copiados. Ahora ve a Excel y presiona Ctrl + V.')}
+function limpiarImportes(){document.getElementById('tablaImportes').innerHTML='';document.getElementById('columnaImportes').value='';document.getElementById('estadoFotos').textContent=''}
+function paquete(){actualizarColumna();return {mes:document.getElementById('mes').value,dia:document.getElementById('dia').value,columna:document.getElementById('columna').value,importes:document.getElementById('columnaImportes').value,fechaGuardado:new Date().toLocaleString()}}
+function guardarEnEsteDispositivo(){localStorage.setItem('muniRentasUltimo',JSON.stringify(paquete()));alert('Guardado en este dispositivo.')}
+function cargarGuardado(){const raw=localStorage.getItem('muniRentasUltimo');if(!raw){alert('No hay guardado en este dispositivo.');return}cargarPaquete(JSON.parse(raw));alert('Datos cargados.')}
+function generarCodigo(){const json=JSON.stringify(paquete());const code=btoa(unescape(encodeURIComponent(json)));document.getElementById('codigoTransferencia').value=code;guardarEnEsteDispositivo();alert('Código generado. Cópialo y ábrelo en la PC para recuperar la columna.')}
+function cargarDesdeCodigo(){const code=document.getElementById('codigoTransferencia').value.trim();if(!code){alert('Pega primero el código.');return}try{const json=decodeURIComponent(escape(atob(code)));cargarPaquete(JSON.parse(json));alert('Código cargado. Ahora puedes copiar la columna para Excel.')}catch(e){alert('Código inválido o incompleto.')}}
+function cargarPaquete(p){document.getElementById('mes').value=p.mes||'JUNIO 2026';document.getElementById('dia').value=p.dia||'2026-06-04';document.getElementById('columna').value=p.columna||'';document.getElementById('columnaImportes').value=p.importes||'';const arr=(p.importes||'').split('\n');renderTabla(arr)}
+function copiarCodigo(){copiarTexto(document.getElementById('codigoTransferencia').value,'Código copiado. Envíatelo a la PC y pégalo en esta misma página.')}
+document.getElementById('fotos').addEventListener('change',e=>{document.getElementById('estadoFotos').textContent=`Fotos cargadas: ${e.target.files.length}`});renderTabla([]);
 </script>
 </body>
 </html>
