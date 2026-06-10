@@ -1,51 +1,111 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Muni Rentas - Recaudación 2026</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-    body{background:#eef3f8;color:#1f2937;padding-bottom:40px}
-    header{background:linear-gradient(135deg,#003d82,#0056b3);color:white;text-align:center;padding:28px 16px}
-    header h1{font-size:30px;margin-bottom:6px}.container{max-width:1100px;margin:22px auto;padding:0 14px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:18px}
-    .card,.box{background:white;border-radius:16px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,.08)}
-    .card{border-left:6px solid #0056b3}.card h3{color:#003d82;margin-bottom:7px}.card p,.muted{color:#64748b;font-size:14px}
-    h2{color:#003d82;margin-bottom:8px}.upload{border:2px dashed #0056b3;background:#eff6ff;padding:22px;border-radius:14px;text-align:center;margin:16px 0}
-    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px}textarea{min-height:230px;font-family:Consolas,monospace;line-height:1.45}
-    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0}label{font-weight:bold;color:#003d82;font-size:14px;margin-bottom:6px;display:block}
-    button{border:0;border-radius:10px;padding:12px 16px;font-weight:bold;cursor:pointer;margin:5px 3px}.primary{background:#0056b3;color:white}.success{background:#16a34a;color:white}.danger{background:#dc2626;color:white}.gray{background:#e2e8f0;color:#1f2937}
-    .status{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0}.stat{background:#f8fafc;border-left:5px solid #0056b3;padding:12px;border-radius:10px}.stat b{font-size:22px;color:#003d82}
-    .preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:14px}.photo{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:white;position:relative}.photo img{width:100%;height:130px;object-fit:cover;display:block}.photo p{font-size:12px;padding:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo button{position:absolute;top:4px;right:4px;padding:5px 8px;border-radius:8px;background:#dc2626;color:white;margin:0}
-    .note{background:#fff7ed;border-left:5px solid #f97316;padding:12px;border-radius:10px;color:#7c2d12;margin-top:12px}.copybox{margin-top:18px}
-  </style>
-</head>
-<body>
-<header><h1>🏛️ Muni Rentas - Recaudación 2026</h1><p>Sube varias fotos, guarda la bandeja y copia importes para Excel</p></header>
-<div class="container">
-  <div class="grid"><div class="card"><h3>📋 Cobranza de Ambulantes</h3><p>Importes diarios.</p></div><div class="card"><h3>🟨 SISA - Tarjetas Amarillas</h3><p>Módulo principal.</p></div><div class="card"><h3>💰 Deuda SISA</h3><p>Control de deuda.</p></div><div class="card"><h3>🧾 Órdenes de Pago</h3><p>Control de órdenes.</p></div></div>
-  <div class="box">
-    <h2>🟨 Liquidaciones SISA - Tarjetas Amarillas</h2><p class="muted">Esta versión corrige el problema: ahora puedes agregar varias fotos y se quedan en la bandeja.</p>
-    <div class="form-grid"><div><label>Mes</label><select id="mes"><option>JUNIO 2026</option><option>JULIO 2026</option><option>AGOSTO 2026</option></select></div><div><label>Día</label><input id="dia" type="date" value="2026-06-04"></div><div><label>Columna Excel</label><input id="columna" value="4/06/2026"></div></div>
-    <div class="upload"><h3>📸 Agregar fotos</h3><p class="muted">Puedes seleccionar 1, 4, 5 o más fotos. Si agregas más después, no se borran las anteriores.</p><br><input id="fotos" type="file" accept="image/*" multiple></div>
-    <div class="status"><div class="stat">Fotos en bandeja<br><b id="cantidad">0</b></div><div class="stat">Estado<br><b id="estado">Listo</b></div></div>
-    <button class="danger" onclick="limpiarFotos()">Borrar fotos</button><button class="gray" onclick="guardarTrabajo()">Guardar trabajo</button><button class="primary" onclick="cargarTrabajo()">Cargar trabajo</button>
-    <div id="preview" class="preview"></div><div class="note"><b>Nota:</b> Por seguridad del navegador, las fotos guardadas se conservan como vista previa en este dispositivo. La lectura IA completa se conectará después.</div>
-    <div class="copybox"><h2>📋 Columna de importes</h2><p class="muted">Pega o revisa aquí los importes y luego cópialos al Excel oficial.</p><textarea id="importes" placeholder="5&#10;5&#10;&#10;3&#10;5"></textarea><br><br><button class="success" onclick="copiarImportes()">Copiar columna para Excel</button></div>
-  </div>
-</div>
-<script>
-let fotosSeleccionadas=[];let fotosGuardadas=[];
-const input=document.getElementById('fotos');
-input.addEventListener('change',async e=>{const nuevas=Array.from(e.target.files||[]);for(const file of nuevas){const data=await fileToDataURL(file);fotosSeleccionadas.push(file);fotosGuardadas.push({name:file.name,data});}input.value='';renderFotos();});
-function fileToDataURL(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
-function renderFotos(){document.getElementById('cantidad').textContent=fotosGuardadas.length;document.getElementById('estado').textContent=fotosGuardadas.length?'Cargadas':'Listo';const cont=document.getElementById('preview');cont.innerHTML='';fotosGuardadas.forEach((f,i)=>{const div=document.createElement('div');div.className='photo';div.innerHTML=`<button onclick="eliminarFoto(${i})">X</button><img src="${f.data}"><p>${i+1}. ${f.name}</p>`;cont.appendChild(div);});}
-function eliminarFoto(i){fotosGuardadas.splice(i,1);fotosSeleccionadas.splice(i,1);renderFotos();}
-function limpiarFotos(){fotosSeleccionadas=[];fotosGuardadas=[];renderFotos();}
-function guardarTrabajo(){const data={mes:mes.value,dia:dia.value,columna:columna.value,importes:importes.value,fotos:fotosGuardadas};try{localStorage.setItem('muniTrabajo',JSON.stringify(data));alert('Trabajo guardado en este dispositivo.');}catch(e){alert('No se pudo guardar porque las fotos pesan mucho. Borra algunas o comprímelas.');}}
-function cargarTrabajo(){const raw=localStorage.getItem('muniTrabajo');if(!raw){alert('No hay trabajo guardado.');return}const d=JSON.parse(raw);mes.value=d.mes||'JUNIO 2026';dia.value=d.dia||'2026-06-04';columna.value=d.columna||'';importes.value=d.importes||'';fotosGuardadas=d.fotos||[];fotosSeleccionadas=[];renderFotos();alert('Trabajo cargado.');}
-async function copiarImportes(){try{await navigator.clipboard.writeText(importes.value);alert('Columna copiada. Ve a Excel y presiona Ctrl + V.');}catch(e){importes.select();document.execCommand('copy');alert('Columna copiada.');}}
-</script>
-</body>
-</html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Muni Rentas - Recaudación 2026</title><style>*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}body{background:#eef3f8;color:#1f2937}header{background:linear-gradient(135deg,#003d82,#0056b3);color:white;text-align:center;padding:28px 16px}.container{max-width:1200px;margin:22px auto;padding:0 14px}.box,.card{background:white;border-radius:16px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,.08);margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.card{border-left:6px solid #0056b3}h2,h3{color:#003d82;margin-bottom:8px}.muted{color:#64748b;font-size:14px}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0}label{font-weight:bold;color:#003d82;font-size:14px;margin-bottom:6px;display:block}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px}textarea{min-height:230px;font-family:Consolas,monospace;line-height:1.45}.upload{border:2px dashed #0056b3;background:#eff6ff;padding:20px;border-radius:14px;text-align:center;margin:16px 0}button{border:0;border-radius:10px;padding:11px 14px;font-weight:bold;cursor:pointer;margin:5px 3px}.primary{background:#0056b3;color:white}.success{background:#16a34a;color:white}.danger{background:#dc2626;color:white}.gray{background:#e2e8f0;color:#1f2937}.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}.stat{background:#f8fafc;border-left:5px solid #0056b3;padding:12px;border-radius:10px}.stat b{font-size:22px;color:#003d82}.preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:12px}.photo{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:white;position:relative}.photo img{width:100%;height:110px;object-fit:cover;display:block}.photo p{font-size:11px;padding:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo button{position:absolute;top:4px;right:4px;padding:4px 7px;background:#dc2626;color:white;margin:0}table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}th{background:#003d82;color:white;padding:8px;text-align:left;position:sticky;top:0}td{border:1px solid #dbe3ef;padding:6px}td input{padding:6px;border:1px solid #cbd5e1}.table-wrap{max-height:520px;overflow:auto;border:1px solid #cbd5e1;border-radius:10px}.note{background:#fff7ed;border-left:5px solid #f97316;padding:12px;border-radius:10px;color:#7c2d12;margin-top:12px}</style></head><body><header><h1>🏛️ Muni Rentas - Recaudación 2026</h1><p>Base fija SISA de 110 comerciantes + importes diarios para Excel</p></header><div class="container"><div class="grid"><div class="card"><h3>📋 Cobranza de Ambulantes</h3><p class="muted">Pendiente.</p></div><div class="card"><h3>🟨 SISA - Tarjetas Amarillas</h3><p class="muted">Base fija cargada: 110 comerciantes.</p></div><div class="card"><h3>💰 Deuda SISA</h3><p class="muted">Pendiente.</p></div><div class="card"><h3>🧾 Órdenes de Pago</h3><p class="muted">Pendiente.</p></div></div><div class="box"><h2>🟨 Liquidaciones SISA - Tarjetas Amarillas</h2><p class="muted">Los 110 comerciantes ya están pegados en la página. Solo llena o digitaliza los importes del día.</p><div class="form-grid"><div><label>Mes</label><select id="mes"><option>JUNIO 2026</option><option>JULIO 2026</option><option>AGOSTO 2026</option></select></div><div><label>Día</label><input id="dia" type="date" value="2026-06-04"></div><div><label>Columna Excel</label><input id="columna" value="4/06/2026"></div></div><div class="upload"><h3>📸 Agregar fotos</h3><p class="muted">Puedes cargar varias fotos. La bandeja no borra las anteriores si agregas más.</p><br><input id="fotos" type="file" accept="image/*" multiple></div><div class="status"><div class="stat">Fotos en bandeja<br><b id="cantidadFotos">0</b></div><div class="stat">Comerciantes fijos<br><b>110</b></div><div class="stat">Importes llenos<br><b id="cantidadImportes">0</b></div><div class="stat">Total S/<br><b id="totalImportes">0.00</b></div></div><button class="danger" onclick="limpiarFotos()">Borrar fotos</button><button class="gray" onclick="guardarTrabajo()">Guardar trabajo</button><button class="primary" onclick="cargarTrabajo()">Cargar trabajo</button><div id="preview" class="preview"></div><div class="note"><b>Importante:</b> La estructura fija ya está lista. La IA debe guiarse por el orden 1 al 110 y solo cambiar los importes diarios.</div></div><div class="box"><h2>📋 Base fija SISA + importes diarios</h2><p class="muted">Llena la columna Importe. Los espacios vacíos se mantienen para pegar correctamente en Excel.</p><button class="success" onclick="copiarImportes()">Copiar solo importes para Excel</button><button class="gray" onclick="limpiarImportes()">Limpiar importes</button><div class="table-wrap"><table><thead><tr><th>Orden</th><th>Apellidos y nombres</th><th>Importe diario</th></tr></thead><tbody id="tbody"></tbody></table></div></div><div class="box"><h2>📌 Columna lista para pegar</h2><textarea id="columnaImportes" placeholder="Aquí aparecerán 110 filas de importes..."></textarea><br><button class="success" onclick="copiarImportes()">Copiar columna</button></div></div><script>const nombres=`INFANTE BALLADARES SANTOS EUSTACIO
+ZURITA JIMENEZ RUBBI
+MORENO LUJAN SANTOS ISABEL
+VASQUEZ FERNADEZ CELFA
+SALAZAR ATOCHE JESSICA AIDA
+GONZALES JIMENEZ GILMER
+JIMENEZ ZURITA JESUS
+GARCIA CORONADO SAMMY
+AVILA CORREA YANINA DEL PILAR
+APONTE CAMPAÑA ZACARIAS TOMAS
+GARCIA PEÑA LEONILA
+CRUZ JIMENEZ ALDO
+GONZALES JIMENEZ ELSA
+ROMERO PEREZ INGRID
+CRUZ JIMENEZ YOLI
+GONZALES HERRERA GABRIELA
+CORDOVA JIMENEZ FELICITA
+GARCIA MONTENEGRO SANTOS ADAN
+ZURITA BRUNO ESTHER
+VITE GARCIA VANESA
+CEDILLO MARTINEZ SAIDA
+CRUZ DE LOS REYES KEVIN
+BOCANEGRA GARCIA RICHAR
+APONTE CAMPAÑA CARLOS
+VILLAVICENCIO ZURITA JHONNY
+FLORES MENDEZ JOSE
+VILELA ALAMO JUDITH
+VILLANUEVA ALAMO NELLY
+PEREZ VILELA JACKELINE
+GARCIA MONTENEGRO NELLY
+VILELA GOMEZ FANNY
+CRUZ JIMENEZ BARTOLOME
+MORENO MORENO NANCY
+MORETO ATOCHE ELIZABETH
+CRUZ JIMENEZ MARIA
+CASTRO RUIZ CHARITO
+MONTALBAN YACILA SARA
+RIVAS CORREA EDWAR
+RAMOS HERRERA YAMILE
+MORAN MENDOZA ISABEL
+ALVARADO PALACIOS JACKELINE
+CORDOVA LOZANO YOSMARA
+MORAN DE LA CRUZ HUMBERTO
+BOCANEGRA VARGAS GEVER
+VIERA VELASQUEZ LOURDES
+VILLEGAS MARCHAN LUIS
+GONZALES JIMENEZ HEVER
+PEREZ BRUNO ALBENIS
+GARCIA PEÑA VICTORIA
+RAMIREZ RIVERA ALBA
+PEREZ LOPEZ JAQUELINE
+ORTEGA HERRERA RAMON
+MENDOZA OLAYA LENIN
+SANDOVAL SAAVEDRA ELOISA
+GONZALES CEDILLO DELFIN
+PEREZ LOPEZ LINDA
+ORDINOLA ZETA MARISOL
+BENITES JIMENEZ EDER
+VILELA HIDALGO JESUS
+CEDILLO MARTINEZ EDWIN
+JIMENEZ GARCIA JESUS
+MORAN GARCIA KEYLA
+QUINDE CHILON ROGGER
+MONTENEGRO LOPEZ FAUSTINO
+PEREZ VILLAVICENCIO NOE
+MARCHAN FLORES JACQUELINE
+RIVAS LOPEZ GRACIELA
+GARCIA SANTOS VICTORIA
+ZETA ORDINOLA ROLANDO
+BRUNO VARGAS JOSE ANTONIO
+VEGA MENDOZA MARIBEL
+GARCIA BRUNO MANUEL
+SANDOVAL CORONADO NELLY
+SILVA VEGA PATRICIA
+MONTENEGRO GARCIA MARLON
+CEDILLO GARCIA SEGUNDO
+MARCHAN FLORES JHON
+PEREZ CHAVEZ MERCEDES
+GONZALES PEREZ FERNANDO
+YACILA CRUZ MARTHA
+SILVA CRUZ RONALD
+PEREZ CORDOVA WILLIAM
+YACILA PEREZ CARMEN
+SANTOS SILVA ISABEL
+MONDRAGON ARIAS JOSE
+GARCIA MONDRAGON TEOFILO
+JIMENEZ ZURITA HEIDY
+GARCIA JIMENEZ CRISTIAN
+MENDOZA ORDINOLA GISELA
+CEDILLO CARRASCO JUANA
+JIMENEZ VILLAVICENCIO DARWIN
+CARRANZA GUZMAN PEDRO
+MENDOZA VELASCO CRISTIAN
+CRUZ ROSILLO SEGUNDO
+CRUZ ROSILLO ALEX
+CEDILLO CARRASCO JAVIER
+MARCHAN CHAVEZ YANINA
+CHAVEZ GONZALES VANESA
+CRUZ ROSILLO LUIS
+RIVAS LOPEZ GERARDO
+CRUZ ROSILLO JHON
+CRUZ ROSILLO JULIO
+ORDINOLA ROSILLO WILMER
+CARRASCO GARCIA JHON
+VILLAVICENCIO CORDOVA MILAGROS
+ORDINOLA ROSILLO ROSMERY
+MENDO SANCEZ DEIBI LENIN
+BETANCOURT PEREZ ANGELLA
+VIERA SALVADOR MILAGROS
+DIAZ MEDINA CINTHIA V.`.split('\n');let fotosGuardadas=[];function renderBase(importes=[]){tbody.innerHTML='';nombres.forEach((n,i)=>{let tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${n}</td><td><input class="imp" value="${importes[i]||''}" oninput="actualizarColumna()"></td>`;tbody.appendChild(tr)});actualizarColumna()}function actualizarColumna(){let vals=[...document.querySelectorAll('.imp')].map(i=>i.value.trim());columnaImportes.value=vals.join('\n');cantidadImportes.textContent=vals.filter(v=>v!=='').length;let total=0;vals.forEach(v=>{let n=parseFloat(v.replace(',','.'));if(!isNaN(n))total+=n});totalImportes.textContent=total.toFixed(2)}async function copiarImportes(){actualizarColumna();try{await navigator.clipboard.writeText(columnaImportes.value);alert('Columna copiada. Pégala en Excel con Ctrl + V.')}catch(e){columnaImportes.select();document.execCommand('copy');alert('Columna copiada')}}function limpiarImportes(){document.querySelectorAll('.imp').forEach(i=>i.value='');actualizarColumna()}fotos.addEventListener('change',async e=>{for(const file of Array.from(e.target.files||[])){const data=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(file)});fotosGuardadas.push({name:file.name,data})}fotos.value='';renderFotos()});function renderFotos(){cantidadFotos.textContent=fotosGuardadas.length;preview.innerHTML='';fotosGuardadas.forEach((f,i)=>{let d=document.createElement('div');d.className='photo';d.innerHTML=`<button onclick="eliminarFoto(${i})">X</button><img src="${f.data}"><p>${i+1}. ${f.name}</p>`;preview.appendChild(d)})}function eliminarFoto(i){fotosGuardadas.splice(i,1);renderFotos()}function limpiarFotos(){fotosGuardadas=[];renderFotos()}function guardarTrabajo(){actualizarColumna();let data={mes:mes.value,dia:dia.value,columna:columna.value,importes:columnaImportes.value,fotos:fotosGuardadas};try{localStorage.setItem('muniSisaTrabajo',JSON.stringify(data));alert('Trabajo guardado en este dispositivo')}catch(e){alert('No se pudo guardar porque las fotos pesan mucho. Borra algunas fotos o guarda solo importes.')}}function cargarTrabajo(){let raw=localStorage.getItem('muniSisaTrabajo');if(!raw){alert('No hay trabajo guardado');return}let d=JSON.parse(raw);mes.value=d.mes||'JUNIO 2026';dia.value=d.dia||'2026-06-04';columna.value=d.columna||'';fotosGuardadas=d.fotos||[];renderFotos();renderBase((d.importes||'').split('\n'));alert('Trabajo cargado')}renderBase();</script></body></html>
