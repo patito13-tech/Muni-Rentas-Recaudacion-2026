@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Muni Rentas - Recaudación 2026</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -22,7 +23,7 @@
     header {
       background: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4);
       color: white;
-      padding: 60px 20px;
+      padding: 40px 20px;
       text-align: center;
       animation: gradientShift 6s ease infinite;
       background-size: 200% 200%;
@@ -36,82 +37,63 @@
     }
 
     header h1 {
-      font-size: 2.8em;
-      margin-bottom: 10px;
+      font-size: 2.2em;
+      margin-bottom: 8px;
       font-weight: 800;
       letter-spacing: -1px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
     header p {
-      font-size: 1.15em;
-      opacity: 0.95;
-      font-weight: 300;
+      font-size: 0.95em;
+      opacity: 0.9;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 30px 20px;
     }
 
-    .grid {
+    .tabs {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-      margin-bottom: 50px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
     }
 
-    .card {
-      background: white;
-      padding: 35px;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(124, 58, 237, 0.15);
-      border: 1px solid rgba(124, 58, 237, 0.1);
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-      overflow: hidden;
+    .tab-btn {
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 2px solid rgba(124, 58, 237, 0.3);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .card:hover::before {
-      left: 100%;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(124, 58, 237, 0.25);
-      border-color: rgba(124, 58, 237, 0.3);
-    }
-
-    .card h3 {
+    .tab-btn.active {
       background: linear-gradient(135deg, #7c3aed, #3b82f6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 12px;
-      font-size: 1.35em;
-      font-weight: 700;
+      border-color: #7c3aed;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
     }
 
-    .card p {
-      color: #6b7280;
-      font-size: 0.98em;
+    .tab-btn:hover {
+      background: rgba(124, 58, 237, 0.2);
+      border-color: #7c3aed;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
     }
 
     .main {
       background: white;
-      padding: 45px;
+      padding: 40px;
       border-radius: 16px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
       border: 1px solid rgba(124, 58, 237, 0.1);
@@ -122,26 +104,19 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-size: 2.2em;
-      margin-bottom: 10px;
+      font-size: 1.8em;
+      margin-bottom: 20px;
       font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .subtitle {
-      color: #6b7280;
-      margin-bottom: 30px;
-      font-size: 1.05em;
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
+      gap: 15px;
+      margin-bottom: 25px;
     }
 
-    .form-grid > div {
+    .form-group {
       display: flex;
       flex-direction: column;
     }
@@ -150,7 +125,7 @@
       font-weight: 700;
       margin-bottom: 8px;
       color: #1f2937;
-      font-size: 0.95em;
+      font-size: 0.9em;
       background: linear-gradient(135deg, #7c3aed, #3b82f6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -158,13 +133,12 @@
     }
 
     input, select {
-      padding: 12px 15px;
+      padding: 10px 12px;
       border: 2px solid #e5e7eb;
-      border-radius: 10px;
-      font-size: 1em;
+      border-radius: 8px;
+      font-size: 0.95em;
       background: white;
       transition: all 0.3s;
-      font-weight: 500;
     }
 
     input:focus, select:focus {
@@ -173,131 +147,195 @@
       box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
     }
 
-    .upload {
+    .upload-zone {
       background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(59, 130, 246, 0.05));
       padding: 30px;
       border-radius: 12px;
-      margin-bottom: 30px;
       border: 2px dashed #7c3aed;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 20px;
     }
 
-    .upload h3 {
-      color: #1f2937;
-      margin-bottom: 10px;
-      font-size: 1.1em;
-      font-weight: 700;
+    .upload-zone:hover {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(59, 130, 246, 0.1));
+      border-color: #3b82f6;
     }
 
-    .upload p {
+    .upload-zone.dragover {
+      background: rgba(124, 58, 237, 0.15);
+      border-color: #06b6d4;
+    }
+
+    .upload-zone p {
       color: #6b7280;
-      margin-bottom: 12px;
+      margin: 10px 0;
     }
 
     .buttons {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-      margin-bottom: 40px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 25px;
     }
 
     button {
-      padding: 14px 28px;
-      font-size: 0.95em;
+      padding: 12px 20px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.3s;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-size: 0.85em;
     }
 
-    .primary {
+    .btn-primary {
       background: linear-gradient(135deg, #7c3aed, #3b82f6);
       color: white;
       box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
     }
 
-    .primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
     }
 
-    .primary:active {
-      transform: translateY(-1px);
-    }
-
-    .secondary {
+    .btn-secondary {
       background: white;
       color: #7c3aed;
       border: 2px solid #7c3aed;
     }
 
-    .secondary:hover {
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(59, 130, 246, 0.1));
-      transform: translateY(-2px);
+    .btn-secondary:hover {
+      background: rgba(124, 58, 237, 0.1);
     }
 
-    table {
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .status-bar {
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .status-item {
+      padding: 10px;
+      background: white;
+      border-radius: 6px;
+      border-left: 4px solid #7c3aed;
+    }
+
+    .status-label {
+      font-size: 0.8em;
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .status-value {
+      font-size: 1.4em;
+      color: #1f2937;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .preview-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
-    table thead {
+    .preview-table thead {
       background: linear-gradient(135deg, #7c3aed, #3b82f6);
       color: white;
     }
 
-    table th {
-      padding: 15px;
+    .preview-table th {
+      padding: 12px;
       text-align: left;
-      font-weight: 700;
-      font-size: 0.95em;
+      font-weight: 600;
+      font-size: 0.85em;
     }
 
-    table td {
-      padding: 12px 15px;
+    .preview-table td {
+      padding: 10px 12px;
       border-bottom: 1px solid #e5e7eb;
+      font-size: 0.9em;
     }
 
-    table tbody tr:hover {
-      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.05), transparent);
+    .preview-table tbody tr:hover {
+      background: #f9fafb;
     }
 
-    .copybox, .savebox {
+    .preview-table input {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .preview-table input:focus {
+      border-color: #7c3aed;
+      outline: none;
+    }
+
+    .status-ok {
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .status-warning {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    .status-error {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    .copy-zone {
       background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(59, 130, 246, 0.05));
-      padding: 25px;
-      border-radius: 12px;
-      margin-bottom: 25px;
+      padding: 20px;
+      border-radius: 8px;
       border: 1px solid rgba(124, 58, 237, 0.2);
+      margin-bottom: 20px;
     }
 
-    .copybox h3, .savebox h3 {
+    .copy-zone h3 {
       color: #1f2937;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .copybox p, .savebox p {
-      color: #6b7280;
-      font-size: 0.95em;
       margin-bottom: 12px;
+      font-size: 0.95em;
     }
 
     textarea {
       width: 100%;
       padding: 12px;
       border: 2px solid #e5e7eb;
-      border-radius: 10px;
+      border-radius: 8px;
       font-family: 'Courier New', monospace;
-      font-size: 0.9em;
-      margin-top: 10px;
+      font-size: 0.85em;
       resize: vertical;
-      min-height: 100px;
+      min-height: 150px;
       background: white;
-      transition: all 0.3s;
     }
 
     textarea:focus {
@@ -306,36 +344,74 @@
       box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
     }
 
-    .note {
-      background: linear-gradient(135deg, #fef3c7, #fef08a);
-      border-left: 4px solid #f59e0b;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-      color: #92400e;
-      font-size: 0.98em;
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(124, 58, 237, 0.3);
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 15px;
       font-weight: 500;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      color: #78350f;
+      border-left: 4px solid #f59e0b;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: #7f1d1d;
+      border-left: 4px solid #ef4444;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 8px;
+      margin: 15px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     footer {
       background: linear-gradient(135deg, #7c3aed, #3b82f6);
       color: white;
       text-align: center;
-      padding: 30px;
-      margin-top: 50px;
-      font-size: 0.95em;
+      padding: 25px;
+      margin-top: 40px;
+      font-size: 0.9em;
       font-weight: 600;
-      box-shadow: 0 -4px 15px rgba(124, 58, 237, 0.2);
     }
 
     @media (max-width: 768px) {
       header h1 {
-        font-size: 1.8em;
+        font-size: 1.6em;
       }
       .main {
         padding: 20px;
       }
       .buttons {
+        grid-template-columns: 1fr;
+      }
+      .form-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -344,94 +420,153 @@
 <body>
   <header>
     <h1>🏛️ Muni Rentas - Recaudación 2026</h1>
-    <p>Digitalización de liquidaciones municipales y copiado rápido de importes diarios</p>
+    <p>Sistema de Digitalización Municipal con IA</p>
   </header>
 
   <div class="container">
-    <div class="grid">
-      <div class="card">
-        <h3>📋 Liquidaciones Cobranza de Ambulantes</h3>
-        <p>Registro de importes diarios de ambulantes.</p>
-      </div>
-      <div class="card">
-        <h3>🟨 Liquidaciones SISA - Tarjetas Amarillas</h3>
-        <p>Gestión de importes para tarjetas amarillas.</p>
-      </div>
-      <div class="card">
-        <h3>💾 Sincronización entre dispositivos</h3>
-        <p>Transferencia segura de datos celular a PC.</p>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('sisa')">🟨 SISA - Tarjetas Amarillas</button>
+      <button class="tab-btn" onclick="showTab('ambulantes')">📋 Ambulantes</button>
+      <button class="tab-btn" onclick="showTab('deuda')">💳 Deuda SISA</button>
+      <button class="tab-btn" onclick="showTab('ordenes')">📄 Órdenes de Pago</button>
+    </div>
+
+    <div id="sisa" class="tab-content active">
+      <div class="main">
+        <h2 class="section-title">🟨 Liquidaciones SISA - Tarjetas Amarillas</h2>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>📅 Fecha de Liquidación</label>
+            <input type="date" id="fecha" value="">
+          </div>
+          <div class="form-group">
+            <label>📍 Categoría (Opcional)</label>
+            <select id="categoria">
+              <option value="">-- Todas --</option>
+              <option value="VERDURAS">VERDURAS</option>
+              <option value="PESCADO">PESCADO</option>
+              <option value="CARNE">CARNE</option>
+              <option value="POLLO">POLLO</option>
+              <option value="ABARROTES">ABARROTES</option>
+              <option value="FRUTAS">FRUTAS</option>
+              <option value="ESPECIAS">ESPECIAS</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('fileInput').click()">
+          <div style="font-size: 2em; margin-bottom: 10px;">📸</div>
+          <p style="font-weight: 600;">Arrastra la foto aquí o haz clic para seleccionar</p>
+          <p style="font-size: 0.85em;">Soporta JPG, PNG - Máx 10MB</p>
+          <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" style="display:none;">
+        </div>
+
+        <div id="previewContainer" style="display:none; margin-bottom: 20px;">
+          <img id="previewImg" class="preview-img">
+          <button class="btn-secondary" onclick="clearPreview()" style="margin-top: 10px;">✕ Limpiar</button>
+        </div>
+
+        <div class="buttons">
+          <button class="btn-primary" onclick="digitalizarConOCR()" id="btnDigitalizar">
+            <span id="btnText">🤖 Digitalizar con IA</span>
+          </button>
+          <button class="btn-secondary" onclick="ingresarManual()">✏️ Ingresar Manual</button>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div id="statusContainer" class="status-bar" style="display:none;">
+          <div class="status-item">
+            <div class="status-label">IMPORTES DETECTADOS</div>
+            <div class="status-value" id="statusCount">0</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">PRECISIÓN</div>
+            <div class="status-value" id="statusAccuracy">0%</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">VACÍOS (No pagó)</div>
+            <div class="status-value" id="statusEmpty">0</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">REQUIEREN REVISIÓN</div>
+            <div class="status-value" id="statusWarning">0</div>
+          </div>
+        </div>
+
+        <div id="tableContainer" style="display:none; margin-bottom: 25px;">
+          <h3 style="margin-bottom: 15px; color: #1f2937; font-weight: 700;">📋 Revisar Importes Detectados</h3>
+          <div style="overflow-x: auto;">
+            <table class="preview-table" id="previewTable">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">#</th>
+                  <th style="width: 100px;">Importe</th>
+                  <th style="width: 100px;">Estado</th>
+                  <th style="width: 60px;">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="buttons" id="actionButtons" style="display:none;">
+          <button class="btn-success" onclick="confirmarImportes()">✅ Confirmar y Guardar</button>
+          <button class="btn-secondary" onclick="editarImportes()">✏️ Editar</button>
+          <button class="btn-secondary" onclick="limpiarTodo()">🔄 Empezar de nuevo</button>
+        </div>
+
+        <div id="copyContainer" style="display:none;" class="copy-zone">
+          <h3>📋 COLUMNA LISTA PARA PEGAR EN EXCEL</h3>
+          <p style="font-size: 0.85em; color: #6b7280; margin-bottom: 12px;">
+            Selecciona todo y copia (Ctrl+C), luego ve a Excel y pega en la columna de hoy.
+          </p>
+          <textarea id="columnaExcel" readonly></textarea>
+          <button class="btn-primary" onclick="copiarAlPortapapeles()" style="margin-top: 12px; width: 100%;">
+            📋 Copiar al Portapapeles
+          </button>
+        </div>
+
+        <div class="buttons" id="saveButtons" style="display:none;">
+          <button class="btn-secondary" onclick="guardarEnGoogle()">☁️ Guardar en Google Sheets</button>
+          <button class="btn-secondary" onclick="guardarLocal()">💾 Guardar Localmente</button>
+          <button class="btn-secondary" onclick="generarCodigo()">🔗 Generar Código para PC</button>
+        </div>
+
+        <div id="loadContainer" style="display:none; margin-top: 25px;">
+          <h3 style="margin-bottom: 15px; color: #1f2937; font-weight: 700;">📂 Cargar Datos Guardados</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Código de Transferencia</label>
+              <textarea id="codigoCargar" placeholder="Pega aquí el código recibido del celular" style="min-height: 100px;"></textarea>
+            </div>
+          </div>
+          <button class="btn-secondary" onclick="cargarDesdeCodigo()">🔓 Cargar desde Código</button>
+          <button class="btn-secondary" onclick="cargarLocal()">💾 Cargar Guardado Local</button>
+        </div>
       </div>
     </div>
 
-    <div class="main">
-      <h2 class="section-title">🟨 Liquidaciones SISA - Tarjetas Amarillas</h2>
-      <p class="subtitle">Objetivo: obtener solo la columna de importes diarios para copiarla y pegarla en Excel.</p>
-
-      <div class="form-grid">
-        <div>
-          <label>Mes de trabajo</label>
-          <select id="mes">
-            <option>JUNIO 2026</option>
-            <option>JULIO 2026</option>
-            <option>AGOSTO 2026</option>
-          </select>
-        </div>
-        <div>
-          <label>Día de liquidación</label>
-          <input type="date" id="dia" value="2026-06-04">
-        </div>
-        <div>
-          <label>Columna en Excel</label>
-          <input type="text" id="columna" placeholder="Ej: A, B, C...">
-        </div>
+    <div id="ambulantes" class="tab-content">
+      <div class="main">
+        <h2 class="section-title">📋 Liquidaciones Cobranza de Ambulantes</h2>
+        <p style="color: #6b7280; margin-top: 20px;">🔧 Módulo en construcción - Próximamente disponible</p>
       </div>
+    </div>
 
-      <div class="upload">
-        <h3>📸 Subir fotos de liquidación</h3>
-        <p>Por ahora la página prepara la columna. La lectura automática real de fotos se conectará después.</p>
-        <input type="file" id="fotos" multiple accept="image/*">
-        <p id="estadoFotos" style="margin-top: 10px; color: #7c3aed; font-weight: 700;"></p>
+    <div id="deuda" class="tab-content">
+      <div class="main">
+        <h2 class="section-title">💳 Liquidación Deuda SISA</h2>
+        <p style="color: #6b7280; margin-top: 20px;">🔧 Módulo en construcción - Próximamente disponible</p>
       </div>
+    </div>
 
-      <div class="buttons">
-        <button class="primary" onclick="digitalizarDemo()">Digitalizar / Cargar Importes de Prueba</button>
-        <button class="secondary" onclick="actualizarColumna()">Actualizar Columna</button>
-        <button class="secondary" onclick="copiarImportes()">Copiar Importes</button>
-        <button class="secondary" onclick="limpiarImportes()">Limpiar Todo</button>
-      </div>
-
-      <h3 style="background: linear-gradient(135deg, #7c3aed, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; font-weight: 700;">Importes diarios</h3>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:80px">Orden</th>
-            <th>Importe</th>
-          </tr>
-        </thead>
-        <tbody id="tablaImportes"></tbody>
-      </table>
-
-      <div class="copybox">
-        <h3>Columna lista para pegar en Excel</h3>
-        <p>Copia esta columna y pégala directamente en la columna del día en Excel.</p>
-        <textarea id="columnaImportes" placeholder="Aquí aparecerá la columna lista para copiar" readonly></textarea>
-        <button class="primary" onclick="copiarImportes()" style="margin-top: 15px; width: 100%;">Copiar al portapapeles</button>
-      </div>
-
-      <div class="savebox">
-        <h3>💾 Guardar para abrir en otra PC</h3>
-        <p>Guarda los importes desde tu celular y genera un código. Luego abre esta misma página en la PC, pega el código y recupera tus datos.</p>
-        <div style="display: grid; gap: 12px; margin-top: 15px;">
-          <button class="secondary" onclick="generarCodigo()">Generar Código de Transferencia</button>
-          <button class="secondary" onclick="copiarCodigo()">Copiar Código</button>
-          <textarea id="codigoTransferencia" placeholder="El código aparecerá aquí..."></textarea>
-          <button class="secondary" onclick="cargarDesdeCodigo()">Cargar desde Código</button>
-          <button class="secondary" onclick="cargarGuardado()">Cargar Guardado en este Dispositivo</button>
-        </div>
-      </div>
-
-      <div class="note">
-        <strong>💡 Importante:</strong> En la PC, selecciona la primera celda del día en Excel y presiona Ctrl + V. Cada importe caerá en una fila.
+    <div id="ordenes" class="tab-content">
+      <div class="main">
+        <h2 class="section-title">📄 Órdenes de Pago</h2>
+        <p style="color: #6b7280; margin-top: 20px;">🔧 Módulo en construcción - Próximamente disponible</p>
       </div>
     </div>
   </div>
@@ -439,113 +574,326 @@
   <footer>Muni Rentas - Recaudación 2026 | Sistema de apoyo para Rentas y Recaudación Municipal</footer>
 
   <script>
-    const importesDemo = [5,5,5,3,5,5,"",5,"",10,3,5,10,5,5,5,"","",5,5,5,"","",5,"",5,10,5,"","","",3,3,3,5,"",5,6,"",3,3,4,5,5,5,6,3.30,"","","","",4,3,"","",3,3,8,3.30,3,3,3,5,3,3,3,"","",3,"","",3,"",5,3,3,3,"",3,3,3,"",3];
+    // Variables globales
+    let imagenActual = null;
+    let importesActuales = [];
+    let modoEdicion = false;
 
-    function renderTabla(arr) {
-      const tbody = document.getElementById('tablaImportes');
-      tbody.innerHTML = '';
-      arr.forEach((v, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i + 1}</td><td><input type="number" value="${v}" step="0.01" style="width:100%;padding:8px;border:2px solid #e5e7eb;border-radius:6px;transition: all 0.2s; font-weight: 500;" onfocus="this.style.borderColor='#7c3aed';" onblur="this.style.borderColor='#e5e7eb';"></td>`;
-        tbody.appendChild(tr);
-      });
+    // Establecer fecha de hoy por defecto
+    document.getElementById('fecha').valueAsDate = new Date();
+
+    // Navegar entre pestañas
+    function showTab(tabName) {
+      // Ocultar todos los tabs
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      // Mostrar tab seleccionado
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
     }
 
-    function digitalizarDemo() {
-      renderTabla(importesDemo);
-      document.getElementById('estadoFotos').textContent = '✓ Se cargó una columna de prueba editable. Luego se conectará lectura real de fotos.';
+    // Drag and drop
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('uploadZone').classList.add('dragover');
     }
 
-    function actualizarColumna() {
-      const inputs = [...document.querySelectorAll('#tablaImportes input')];
-      document.getElementById('columnaImportes').value = inputs.length ? inputs.map(i => i.value.trim()).join('\n') : '';
+    function handleDragLeave(e) {
+      document.getElementById('uploadZone').classList.remove('dragover');
     }
 
-    async function copiarTexto(txt, msg) {
-      try {
-        await navigator.clipboard.writeText(txt);
-        alert(msg);
-      } catch (e) {
-        alert('No se pudo copiar automático. Selecciona el texto y copia manualmente.');
-      }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('uploadZone').classList.remove('dragover');
+      handleFileSelect({ target: { files: e.dataTransfer.files } });
     }
 
-    function copiarImportes() {
-      actualizarColumna();
-      copiarTexto(document.getElementById('columnaImportes').value, '✓ Importes copiados. Ahora ve a Excel y presiona Ctrl + V.');
-    }
+    // Manejar selección de archivo
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
 
-    function limpiarImportes() {
-      document.getElementById('tablaImportes').innerHTML = '';
-      document.getElementById('columnaImportes').value = '';
-      document.getElementById('estadoFotos').textContent = '';
-    }
-
-    function paquete() {
-      actualizarColumna();
-      return {
-        mes: document.getElementById('mes').value,
-        dia: document.getElementById('dia').value,
-        columna: document.getElementById('columna').value,
-        importes: document.getElementById('columnaImportes').value
-      };
-    }
-
-    function guardarEnEsteDispositivo() {
-      localStorage.setItem('muniRentasUltimo', JSON.stringify(paquete()));
-      alert('✓ Guardado en este dispositivo.');
-    }
-
-    function cargarGuardado() {
-      const raw = localStorage.getItem('muniRentasUltimo');
-      if (!raw) {
-        alert('No hay guardado en este dispositivo.');
+      if (file.size > 10 * 1024 * 1024) {
+        mostrarAlerta('El archivo es muy grande (máx 10MB)', 'error');
         return;
       }
-      cargarPaquete(JSON.parse(raw));
-      alert('✓ Datos cargados.');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagenActual = e.target.result;
+        document.getElementById('previewImg').src = imagenActual;
+        document.getElementById('previewContainer').style.display = 'block';
+        mostrarAlerta('✅ Imagen cargada correctamente', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearPreview() {
+      imagenActual = null;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('previewContainer').style.display = 'none';
+      limpiarTodo();
+    }
+
+    // OCR con Tesseract
+    async function digitalizarConOCR() {
+      if (!imagenActual) {
+        mostrarAlerta('Por favor, sube una imagen primero', 'error');
+        return;
+      }
+
+      const btnDigitalizar = document.getElementById('btnDigitalizar');
+      const btnText = document.getElementById('btnText');
+      btnDigitalizar.disabled = true;
+      btnText.innerHTML = '<span class="spinner"></span> Leyendo imagen...';
+
+      try {
+        mostrarAlerta('⏳ Procesando imagen con IA (esto toma 10-30 segundos)...', 'warning');
+
+        const result = await Tesseract.recognize(imagenActual, 'spa', {
+          logger: m => console.log('OCR Progress:', m.progress)
+        });
+
+        const texto = result.data.text;
+        console.log('Texto detectado:', texto);
+
+        // Extraer números del texto
+        const importes = extraerImportes(texto);
+
+        if (importes.length === 0) {
+          mostrarAlerta('❌ No se detectaron importes. Intenta con otra foto o ingresa manualmente.', 'error');
+          btnDigitalizar.disabled = false;
+          btnText.innerHTML = '🤖 Digitalizar con IA';
+          return;
+        }
+
+        importesActuales = importes;
+        mostrarTablaRevision();
+        mostrarAlerta(`✅ Se detectaron ${importes.length} importes. Por favor revisa antes de confirmar.`, 'success');
+
+        btnDigitalizar.disabled = false;
+        btnText.innerHTML = '🤖 Digitalizar con IA';
+      } catch (error) {
+        console.error('Error OCR:', error);
+        mostrarAlerta('❌ Error procesando la imagen: ' + error.message, 'error');
+        btnDigitalizar.disabled = false;
+        btnText.innerHTML = '🤖 Digitalizar con IA';
+      }
+    }
+
+    // Extraer números del texto
+    function extraerImportes(texto) {
+      // Buscar números decimales o enteros
+      const patron = /\d+(?:[.,]\d{1,2})?/g;
+      const numeros = texto.match(patron) || [];
+
+      // Filtrar números válidos (entre 0.5 y 1000)
+      const importes = numeros
+        .map(n => parseFloat(n.replace(',', '.')))
+        .filter(n => n >= 0.5 && n <= 1000);
+
+      // Remover duplicados muy cercanos
+      return [...new Set(importes)];
+    }
+
+    // Mostrar tabla de revisión
+    function mostrarTablaRevision() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      importesActuales.forEach((importe, index) => {
+        const estado = validarImporte(importe);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td><input type="number" step="0.01" value="${importe}" class="importe-input" data-index="${index}"></td>
+          <td><span class="status-${estado.clase}">${estado.texto}</span></td>
+          <td><button class="btn-secondary" onclick="eliminarImporte(${index})" style="padding: 4px 8px; font-size: 0.75em;">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      actualizarEstadisticas();
+      document.getElementById('tableContainer').style.display = 'block';
+      document.getElementById('actionButtons').style.display = 'grid';
+    }
+
+    function validarImporte(importe) {
+      if (importe < 1) return { clase: 'warning', texto: '⚠️ Bajo' };
+      if (importe > 50) return { clase: 'warning', texto: '⚠️ Alto' };
+      return { clase: 'ok', texto: '✅ OK' };
+    }
+
+    function eliminarImporte(index) {
+      importesActuales.splice(index, 1);
+      mostrarTablaRevision();
+    }
+
+    function editarImportes() {
+      // Leer valores de los inputs
+      document.querySelectorAll('.importe-input').forEach((input, index) => {
+        importesActuales[index] = parseFloat(input.value) || 0;
+      });
+      modoEdicion = false;
+      mostrarTablaRevision();
+    }
+
+    function actualizarEstadisticas() {
+      const total = importesActuales.length;
+      const conProblemas = importesActuales.filter(i => i < 1 || i > 50).length;
+      const precisión = total > 0 ? Math.round((100 - (conProblemas / total) * 100)) : 0;
+
+      document.getElementById('statusCount').textContent = total;
+      document.getElementById('statusAccuracy').textContent = precisión + '%';
+      document.getElementById('statusEmpty').textContent = '0';
+      document.getElementById('statusWarning').textContent = conProblemas;
+      document.getElementById('statusContainer').style.display = 'grid';
+    }
+
+    function confirmarImportes() {
+      // Actualizar desde inputs
+      editarImportes();
+
+      // Generar columna para Excel
+      generarColumnaExcel();
+
+      document.getElementById('copyContainer').style.display = 'block';
+      document.getElementById('saveButtons').style.display = 'grid';
+      mostrarAlerta('✅ Importes confirmados y listos para copiar', 'success');
+    }
+
+    function generarColumnaExcel() {
+      const columna = importesActuales.map(n => n.toFixed(2)).join('\n');
+      document.getElementById('columnaExcel').value = columna;
+    }
+
+    async function copiarAlPortapapeles() {
+      const texto = document.getElementById('columnaExcel').value;
+      try {
+        await navigator.clipboard.writeText(texto);
+        mostrarAlerta('✅ Copiado al portapapeles. Ahora ve a Excel y pega (Ctrl+V)', 'success');
+      } catch (err) {
+        mostrarAlerta('❌ No se pudo copiar. Selecciona manualmente y copia.', 'error');
+      }
+    }
+
+    function guardarLocal() {
+      const datos = {
+        fecha: document.getElementById('fecha').value,
+        categoria: document.getElementById('categoria').value,
+        importes: importesActuales,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('muniRentasUltimo', JSON.stringify(datos));
+      mostrarAlerta('💾 Guardado localmente en este dispositivo', 'success');
+    }
+
+    function cargarLocal() {
+      const datos = localStorage.getItem('muniRentasUltimo');
+      if (!datos) {
+        mostrarAlerta('❌ No hay guardados previos', 'error');
+        return;
+      }
+
+      const parsed = JSON.parse(datos);
+      document.getElementById('fecha').value = parsed.fecha;
+      document.getElementById('categoria').value = parsed.categoria;
+      importesActuales = parsed.importes;
+
+      mostrarTablaRevision();
+      confirmarImportes();
+      mostrarAlerta('✅ Datos cargados desde almacenamiento local', 'success');
     }
 
     function generarCodigo() {
-      const json = JSON.stringify(paquete());
-      const code = btoa(unescape(encodeURIComponent(json)));
-      document.getElementById('codigoTransferencia').value = code;
-      guardarEnEsteDispositivo();
+      const datos = {
+        fecha: document.getElementById('fecha').value,
+        categoria: document.getElementById('categoria').value,
+        importes: importesActuales
+      };
+      const json = JSON.stringify(datos);
+      const codigo = btoa(unescape(encodeURIComponent(json)));
+      
+      const codigoContainer = document.createElement('div');
+      codigoContainer.innerHTML = `
+        <div class="copy-zone" style="margin-top: 20px;">
+          <h3>🔗 Código para Transferir a PC</h3>
+          <p style="font-size: 0.85em; color: #6b7280; margin-bottom: 12px;">
+            Copia este código y envíatelo por WhatsApp o email. Luego desde la PC, pégalo en "Código de Transferencia" y carga los datos.
+          </p>
+          <textarea readonly style="font-family: monospace; font-size: 0.75em;">${codigo}</textarea>
+          <button class="btn-primary" onclick="copiarCodigo(this)" style="margin-top: 12px; width: 100%;">
+            📋 Copiar Código
+          </button>
+        </div>
+      `;
+      document.getElementById('saveButtons').after(codigoContainer);
+    }
+
+    function copiarCodigo(btn) {
+      const textarea = btn.previousElementSibling;
+      textarea.select();
+      document.execCommand('copy');
+      mostrarAlerta('✅ Código copiado al portapapeles', 'success');
     }
 
     function cargarDesdeCodigo() {
-      const code = document.getElementById('codigoTransferencia').value.trim();
-      if (!code) {
-        alert('Pega primero el código.');
+      const codigo = document.getElementById('codigoCargar').value.trim();
+      if (!codigo) {
+        mostrarAlerta('Por favor pega el código primero', 'error');
         return;
       }
+
       try {
-        const json = decodeURIComponent(escape(atob(code)));
-        cargarPaquete(JSON.parse(json));
-        alert('✓ Datos cargados desde código.');
-      } catch (e) {
-        alert('Código inválido.');
+        const json = decodeURIComponent(escape(atob(codigo)));
+        const datos = JSON.parse(json);
+
+        document.getElementById('fecha').value = datos.fecha;
+        document.getElementById('categoria').value = datos.categoria;
+        importesActuales = datos.importes;
+
+        mostrarTablaRevision();
+        confirmarImportes();
+        document.getElementById('loadContainer').style.display = 'none';
+        mostrarAlerta('✅ Datos cargados desde código. Ya puedes copiar para Excel', 'success');
+      } catch (error) {
+        mostrarAlerta('❌ Código inválido o corrupto', 'error');
       }
     }
 
-    function cargarPaquete(p) {
-      document.getElementById('mes').value = p.mes || 'JUNIO 2026';
-      document.getElementById('dia').value = p.dia || '2026-06-04';
-      document.getElementById('columna').value = p.columna || '';
-      const importes = (p.importes || '').split('\n').filter(x => x);
-      renderTabla(importes);
-      document.getElementById('columnaImportes').value = p.importes || '';
+    function ingresarManual() {
+      importesActuales = [];
+      modoEdicion = true;
+      mostrarTablaRevision();
+      mostrarAlerta('📝 Modo manual: Añade los importes uno por uno', 'warning');
     }
 
-    function copiarCodigo() {
-      copiarTexto(document.getElementById('codigoTransferencia').value, '✓ Código copiado. Envíatelo a la PC y pégalo en esta misma página.');
+    function limpiarTodo() {
+      importesActuales = [];
+      imagenActual = null;
+      modoEdicion = false;
+      document.getElementById('tableContainer').style.display = 'none';
+      document.getElementById('actionButtons').style.display = 'none';
+      document.getElementById('copyContainer').style.display = 'none';
+      document.getElementById('saveButtons').style.display = 'none';
+      document.getElementById('statusContainer').style.display = 'none';
+      document.getElementById('alertContainer').innerHTML = '';
     }
 
-    document.getElementById('fotos').addEventListener('change', e => {
-      document.getElementById('estadoFotos').textContent = `✓ Fotos cargadas: ${e.target.files.length}`;
-    });
+    function mostrarAlerta(mensaje, tipo) {
+      const container = document.getElementById('alertContainer');
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${tipo}`;
+      alert.textContent = mensaje;
+      container.innerHTML = '';
+      container.appendChild(alert);
 
-    renderTabla([]);
+      setTimeout(() => {
+        alert.style.opacity = '0';
+        alert.style.transition = 'opacity 0.3s';
+      }, 5000);
+    }
   </script>
 </body>
 </html>
