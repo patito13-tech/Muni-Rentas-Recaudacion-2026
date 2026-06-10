@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muni Rentas - Recaudación 2026 | Diseño Dinámico</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #1f2937;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      animation: gradientShift 6s ease infinite;
+      background-size: 200% 200%;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    header h1 {
+      font-size: 2.8em;
+      margin-bottom: 10px;
+      font-weight: 800;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .main {
+      background: white;
+      padding: 45px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+    }
+    .section-title {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    button {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      color: white;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+    }
+    button:hover {
+      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
+      transform: translateY(-3px);
+    }
+    footer {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin-top: 50px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏛️ Muni Rentas - Recaudación 2026</h1>
+    <p>Digitalización de liquidaciones municipales</p>
+  </header>
+  <div class="container">
+    <div class="main">
+      <h2 class="section-title">Liquidaciones SISA</h2>
+      <p style="margin-bottom: 20px; color: #666;">Sistema dinámico con gradientes animados - Púrpura, Azul, Cian</p>
+      <button onclick="alert('Diseño Dinámico - Próximamente')">Cargar Sistema</button>
+    </div>
+  </div>
+  <footer>Muni Rentas - Recaudación 2026 | Sistema de apoyo para Rentas y Recaudación Municipal</footer>
+</body>
+</html>
