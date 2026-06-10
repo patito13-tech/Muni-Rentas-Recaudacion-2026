@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muni Rentas - Múltiples Fotos</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+    body{background:#eef3f8;color:#1f2937;padding-bottom:40px}
+    header{background:linear-gradient(135deg,#003d82,#0056b3);color:white;text-align:center;padding:28px 16px}
+    .container{max-width:1000px;margin:24px auto;padding:0 14px}
+    .box{background:white;border-radius:16px;padding:20px;box-shadow:0 8px 25px rgba(0,0,0,.09);margin-bottom:18px}
+    h2{color:#003d82;margin-bottom:10px}.muted{color:#64748b;margin-bottom:16px}
+    .upload{border:2px dashed #0056b3;background:#eff6ff;padding:24px;border-radius:14px;text-align:center;margin:16px 0}
+    input,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px}
+    textarea{min-height:240px;font-family:Consolas,monospace;line-height:1.45}
+    button{border:0;border-radius:10px;padding:12px 16px;font-weight:bold;cursor:pointer;margin:6px 4px}
+    .primary{background:#0056b3;color:white}.success{background:#16a34a;color:white}.danger{background:#dc2626;color:white}.gray{background:#e2e8f0;color:#1f2937}
+    .status{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0}
+    .stat{background:#f8fafc;border-left:5px solid #0056b3;padding:12px;border-radius:10px}.stat b{font-size:22px;color:#003d82}
+    .preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:14px}
+    .photo{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:white;position:relative}.photo img{width:100%;height:130px;object-fit:cover;display:block}.photo p{font-size:12px;padding:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo button{position:absolute;top:4px;right:4px;padding:5px 8px;border-radius:8px;background:#dc2626;color:white;margin:0}
+    .note{background:#fff7ed;border-left:5px solid #f97316;padding:12px;border-radius:10px;color:#7c2d12;margin-top:12px}
+  </style>
+</head>
+<body>
+<header><h1>🏛️ Muni Rentas - Recaudación 2026</h1><p>Subida de múltiples fotos sin perder las anteriores</p></header>
+<div class="container">
+  <div class="box">
+    <h2>📸 Bandeja de fotos</h2>
+    <p class="muted">Puedes escoger 1, 4, 5 o más fotos. Si vuelves a seleccionar, se agregan a la bandeja y no se borran las anteriores.</p>
+    <div class="upload">
+      <h3>Agregar fotos</h3>
+      <p>Selecciona varias imágenes a la vez o agrega más después.</p><br>
+      <input id="fotos" type="file" accept="image/*" multiple>
+    </div>
+    <div class="status">
+      <div class="stat">Fotos en bandeja<br><b id="cantidad">0</b></div>
+      <div class="stat">Estado<br><b id="estado">Listo</b></div>
+    </div>
+    <button class="danger" onclick="limpiarFotos()">Borrar todas las fotos</button>
+    <div id="preview" class="preview"></div>
+    <div class="note"><b>Importante:</b> esta versión corrige el problema de que solo se guarde una foto. Ahora las fotos se acumulan en una lista.</div>
+  </div>
+  <div class="box">
+    <h2>📋 Importes diarios</h2>
+    <p class="muted">Mientras conectamos la lectura real de fotos, aquí puedes pegar o editar la columna de importes y copiarla para Excel.</p>
+    <textarea id="importes" placeholder="Ejemplo:
+5
+5
+
+3
+5"></textarea>
+    <br><br>
+    <button class="success" onclick="copiarImportes()">Copiar columna para Excel</button>
+    <button class="gray" onclick="guardarLocal()">Guardar en este dispositivo</button>
+    <button class="primary" onclick="cargarLocal()">Cargar guardado</button>
+  </div>
+</div>
+<script>
+let fotosSeleccionadas=[];
+const input=document.getElementById('fotos');
+input.addEventListener('change',e=>{
+  const nuevas=Array.from(e.target.files || []);
+  fotosSeleccionadas=[...fotosSeleccionadas,...nuevas];
+  input.value='';
+  renderFotos();
+});
+function renderFotos(){
+  document.getElementById('cantidad').textContent=fotosSeleccionadas.length;
+  document.getElementById('estado').textContent=fotosSeleccionadas.length?'Cargadas':'Listo';
+  const cont=document.getElementById('preview'); cont.innerHTML='';
+  fotosSeleccionadas.forEach((file,index)=>{
+    const url=URL.createObjectURL(file);
+    const div=document.createElement('div'); div.className='photo';
+    div.innerHTML=`<button onclick="eliminarFoto(${index})">X</button><img src="${url}"><p>${index+1}. ${file.name}</p>`;
+    cont.appendChild(div);
+  });
+}
+function eliminarFoto(i){fotosSeleccionadas.splice(i,1);renderFotos();}
+function limpiarFotos(){fotosSeleccionadas=[];renderFotos();}
+async function copiarImportes(){
+  const txt=document.getElementById('importes').value;
+  try{await navigator.clipboard.writeText(txt);alert('Columna copiada. Pégala en Excel con Ctrl + V.');}
+  catch(e){document.getElementById('importes').select();document.execCommand('copy');alert('Columna copiada.');}
+}
+function guardarLocal(){localStorage.setItem('muni_importes',document.getElementById('importes').value);alert('Importes guardados en este dispositivo.');}
+function cargarLocal(){document.getElementById('importes').value=localStorage.getItem('muni_importes')||'';}
+</script>
+</body>
+</html>
