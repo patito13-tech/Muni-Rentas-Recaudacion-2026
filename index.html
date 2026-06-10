@@ -222,6 +222,15 @@
       background: #059669;
     }
 
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
     .status-bar {
       background: #f3f4f6;
       padding: 15px;
@@ -383,12 +392,30 @@
       border-left: 4px solid #ef4444;
     }
 
-    .preview-img {
+    .preview-img, .camera-feed {
       max-width: 100%;
       max-height: 400px;
       border-radius: 8px;
       margin: 15px 0;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    #cameraContainer {
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    #video {
+      width: 100%;
+      border-radius: 8px;
+      background: #000;
+    }
+
+    .camera-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
     }
 
     footer {
@@ -455,19 +482,39 @@
           </div>
         </div>
 
-        <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('fileInput').click()">
-          <div style="font-size: 2em; margin-bottom: 10px;">📸</div>
-          <p style="font-weight: 600;">Arrastra la foto aquí o haz clic para seleccionar</p>
-          <p style="font-size: 0.85em;">Soporta JPG, PNG - Máx 10MB</p>
-          <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" style="display:none;">
+        <!-- SELECTOR DE MÉTODO -->
+        <div class="buttons">
+          <button class="btn-secondary" onclick="mostrarCamara()">📱 Tomar Foto con Cámara</button>
+          <button class="btn-secondary" onclick="mostrarCarga()">📁 Subir Foto</button>
         </div>
 
+        <!-- CÁMARA EN VIVO -->
+        <div id="cameraContainer">
+          <video id="video" autoplay playsinline></video>
+          <canvas id="canvas" style="display:none;"></canvas>
+          <div class="camera-buttons">
+            <button class="btn-success" onclick="capturarFoto()">📸 Capturar</button>
+            <button class="btn-danger" onclick="cerrarCamara()">✕ Cancelar</button>
+          </div>
+        </div>
+
+        <!-- CARGA DE ARCHIVO -->
+        <div id="uploadContainer" style="display:none;">
+          <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('fileInput').click()">
+            <div style="font-size: 2em; margin-bottom: 10px;">📸</div>
+            <p style="font-weight: 600;">Arrastra la foto aquí o haz clic para seleccionar</p>
+            <p style="font-size: 0.85em;">Soporta JPG, PNG - Máx 10MB</p>
+            <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" style="display:none;">
+          </div>
+        </div>
+
+        <!-- PREVIEW -->
         <div id="previewContainer" style="display:none; margin-bottom: 20px;">
           <img id="previewImg" class="preview-img">
           <button class="btn-secondary" onclick="clearPreview()" style="margin-top: 10px;">✕ Limpiar</button>
         </div>
 
-        <div class="buttons">
+        <div class="buttons" id="digitalizarButtons" style="display:none;">
           <button class="btn-primary" onclick="digitalizarConOCR()" id="btnDigitalizar">
             <span id="btnText">🤖 Digitalizar con IA</span>
           </button>
@@ -530,7 +577,6 @@
         </div>
 
         <div class="buttons" id="saveButtons" style="display:none;">
-          <button class="btn-secondary" onclick="guardarEnGoogle()">☁️ Guardar en Google Sheets</button>
           <button class="btn-secondary" onclick="guardarLocal()">💾 Guardar Localmente</button>
           <button class="btn-secondary" onclick="generarCodigo()">🔗 Generar Código para PC</button>
         </div>
@@ -578,22 +624,73 @@
     let imagenActual = null;
     let importesActuales = [];
     let modoEdicion = false;
+    let streamCamara = null;
 
     // Establecer fecha de hoy por defecto
     document.getElementById('fecha').valueAsDate = new Date();
 
     // Navegar entre pestañas
     function showTab(tabName) {
-      // Ocultar todos los tabs
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-      // Mostrar tab seleccionado
       document.getElementById(tabName).classList.add('active');
       event.target.classList.add('active');
     }
 
-    // Drag and drop
+    // ============ CÁMARA ============
+    function mostrarCamara() {
+      document.getElementById('cameraContainer').style.display = 'block';
+      document.getElementById('uploadContainer').style.display = 'none';
+      document.getElementById('previewContainer').style.display = 'none';
+      iniciarCamara();
+    }
+
+    function mostrarCarga() {
+      document.getElementById('uploadContainer').style.display = 'block';
+      document.getElementById('cameraContainer').style.display = 'none';
+      cerrarCamara();
+    }
+
+    async function iniciarCamara() {
+      try {
+        streamCamara = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
+          audio: false
+        });
+        document.getElementById('video').srcObject = streamCamara;
+        mostrarAlerta('✅ Cámara activada', 'success');
+      } catch (error) {
+        mostrarAlerta('❌ No se pudo acceder a la cámara: ' + error.message, 'error');
+      }
+    }
+
+    function cerrarCamara() {
+      if (streamCamara) {
+        streamCamara.getTracks().forEach(track => track.stop());
+        streamCamara = null;
+      }
+      document.getElementById('cameraContainer').style.display = 'none';
+    }
+
+    function capturarFoto() {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+
+      imagenActual = canvas.toDataURL('image/jpeg', 0.95);
+      document.getElementById('previewImg').src = imagenActual;
+      document.getElementById('previewContainer').style.display = 'block';
+      document.getElementById('digitalizarButtons').style.display = 'grid';
+
+      cerrarCamara();
+      mostrarAlerta('✅ Foto capturada correctamente', 'success');
+    }
+
+    // ============ CARGA DE ARCHIVO ============
     function handleDragOver(e) {
       e.preventDefault();
       document.getElementById('uploadZone').classList.add('dragover');
@@ -609,7 +706,6 @@
       handleFileSelect({ target: { files: e.dataTransfer.files } });
     }
 
-    // Manejar selección de archivo
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -624,6 +720,7 @@
         imagenActual = e.target.result;
         document.getElementById('previewImg').src = imagenActual;
         document.getElementById('previewContainer').style.display = 'block';
+        document.getElementById('digitalizarButtons').style.display = 'grid';
         mostrarAlerta('✅ Imagen cargada correctamente', 'success');
       };
       reader.readAsDataURL(file);
@@ -633,13 +730,14 @@
       imagenActual = null;
       document.getElementById('fileInput').value = '';
       document.getElementById('previewContainer').style.display = 'none';
+      document.getElementById('digitalizarButtons').style.display = 'none';
       limpiarTodo();
     }
 
-    // OCR con Tesseract
+    // ============ OCR ============
     async function digitalizarConOCR() {
       if (!imagenActual) {
-        mostrarAlerta('Por favor, sube una imagen primero', 'error');
+        mostrarAlerta('Por favor, toma o sube una imagen primero', 'error');
         return;
       }
 
@@ -658,7 +756,6 @@
         const texto = result.data.text;
         console.log('Texto detectado:', texto);
 
-        // Extraer números del texto
         const importes = extraerImportes(texto);
 
         if (importes.length === 0) {
@@ -682,22 +779,15 @@
       }
     }
 
-    // Extraer números del texto
     function extraerImportes(texto) {
-      // Buscar números decimales o enteros
       const patron = /\d+(?:[.,]\d{1,2})?/g;
       const numeros = texto.match(patron) || [];
-
-      // Filtrar números válidos (entre 0.5 y 1000)
       const importes = numeros
         .map(n => parseFloat(n.replace(',', '.')))
         .filter(n => n >= 0.5 && n <= 1000);
-
-      // Remover duplicados muy cercanos
       return [...new Set(importes)];
     }
 
-    // Mostrar tabla de revisión
     function mostrarTablaRevision() {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '';
@@ -731,7 +821,6 @@
     }
 
     function editarImportes() {
-      // Leer valores de los inputs
       document.querySelectorAll('.importe-input').forEach((input, index) => {
         importesActuales[index] = parseFloat(input.value) || 0;
       });
@@ -752,12 +841,8 @@
     }
 
     function confirmarImportes() {
-      // Actualizar desde inputs
       editarImportes();
-
-      // Generar columna para Excel
       generarColumnaExcel();
-
       document.getElementById('copyContainer').style.display = 'block';
       document.getElementById('saveButtons').style.display = 'grid';
       mostrarAlerta('✅ Importes confirmados y listos para copiar', 'success');
